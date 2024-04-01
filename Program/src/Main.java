@@ -1,5 +1,8 @@
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Main {
   public static void main(String[] args) {
@@ -23,7 +26,47 @@ public class Main {
         new Book(17L, "레버리지", "롭 무어", "경제", 16200)
     );
 
+    System.out.println("*** 1) 카테고리가 여행인 책 제목 조회");
+    bookList.stream()
+        .filter(book -> book.getCategory().equals("여행"))
+        .forEach(f -> System.out.println(f.getBookName()));
 
+    System.out.println("*** 2) 가격이 16200원 이하인 책 제목 조회");
+    bookList.stream()
+        .filter(book -> book.getPrice() <= 16200)
+        .forEach(f -> System.out.println(f.getBookName()));
+
+    System.out.println("*** 3) 책 제목에 '경제' 라는 용어가 들어간 책 제목 조회");
+    bookList.stream()
+        .filter(book -> book.getBookName().contains("경제"))
+        .forEach(f -> System.out.println(f.getBookName()));
+
+    System.out.println("*** 4) 가격이 가장 비싼 책 가격 조회");
+    double maxPrice = bookList.stream()
+                      .mapToDouble(Book::getPrice)
+                      .max().getAsDouble();
+    System.out.println(maxPrice);
+
+    System.out.println("*** 5) 카테고리가 IT인 책들의 가격 합 조회");
+    double sum = bookList.stream()
+                .filter(book -> book.getCategory().equals("IT"))
+                .mapToDouble(Book::getPrice)
+                .sum();
+    System.out.println(sum);
+
+    System.out.println("*** 6) IT 책 할인 이벤트");
+    // 카테고리가 IT인 책들의 가격을 40% 할인하여 새로운 책 리스트 만들기
+    List<Book> discountedBookList = bookList.stream()
+                                    .filter(book -> book.getCategory().equals("IT"))
+                                    .map(book -> {
+                                      book.setPrice(book.getPrice() * 0.6);
+                                      return book;
+                                    })
+                                    .toList();
+    for (Book book : discountedBookList) {
+      System.out.println("제목 : " + book.getBookName());
+      System.out.println("가격 : " + book.getPrice() + "\n");
+    }
   }
 }
 
